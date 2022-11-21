@@ -57,12 +57,24 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   TextButton(
                       onPressed: () async {
-                        final email = _email.text;
-                        final password = _password.text;
+                        try {
+                          final email = _email.text;
+                          final password = _password.text;
 
-                        await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                                email: email, password: password);
+                          await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                                  email: email, password: password);
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'email-already-in-use') {
+                            print('Email is already in use');
+                          } else if (e.code == 'weak-password') {
+                            print('Weak Password');
+                          } else if (e.code == 'invalid-email') {
+                            print('Invalid Email');
+                          } else {
+                            print(e);
+                          }
+                        }
                       },
                       child: const Text('Register'))
                 ]);

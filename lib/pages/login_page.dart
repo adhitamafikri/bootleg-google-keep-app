@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
+      appBar: AppBar(title: const Text('Login')),
       body: FutureBuilder(
           future: Firebase.initializeApp(
               options: DefaultFirebaseOptions.currentPlatform),
@@ -57,14 +57,25 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   TextButton(
                       onPressed: () async {
-                        final email = _email.text;
-                        final password = _password.text;
-
-                        await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                                email: email, password: password);
+                        try {
+                          final email = _email.text;
+                          final password = _password.text;
+                          final userCredential = await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                                  email: email, password: password);
+                          print(userCredential);
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'user-not-found') {
+                            print('User not found');
+                          } else if (e.code == 'wrong-password') {
+                            print('Wrong Password');
+                          } else {
+                            print('Unknown Error');
+                            print(e.code);
+                          }
+                        }
                       },
-                      child: const Text('Register'))
+                      child: const Text('Login'))
                 ]);
               default:
                 return const Text('Loading...');
