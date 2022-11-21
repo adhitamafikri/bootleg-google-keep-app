@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "871030468104",
+    "project_id": "bootleg--keep-app",
+    "storage_bucket": "bootleg--keep-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871030468104:android:2340b0ef45907061016bbd",
+        "android_client_info": {
+          "package_name": "com.example.bootleg_google_keep_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "871030468104-73p5qgrveo8nji8p1qlesta9qnquhera.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh0U9GKBxCyVA6cKdtZCPepwYHFVhQMvc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "871030468104-73p5qgrveo8nji8p1qlesta9qnquhera.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
