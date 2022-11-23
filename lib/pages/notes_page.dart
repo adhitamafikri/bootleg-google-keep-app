@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'dart:developer' as devtools show log;
 
 enum MenuAction { logout }
 
@@ -29,4 +30,29 @@ class _NotesPageState extends State<NotesPage> {
       body: Container(),
     );
   }
+}
+
+Future<bool> showLogOutDialog(BuildContext context) async {
+  final result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('logout'),
+          content: const Text('Are you sure you want to to logout?'),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: const Text('Cancel')),
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: const Text('Logout'))
+          ],
+        );
+      });
+
+  return result ?? false;
 }

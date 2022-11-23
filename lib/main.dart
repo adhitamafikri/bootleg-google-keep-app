@@ -6,7 +6,6 @@ import 'package:bootleg_google_keep_app/pages/login_page.dart';
 import 'package:bootleg_google_keep_app/pages/verify_email_page.dart';
 import 'package:bootleg_google_keep_app/pages/notes_page.dart';
 import 'firebase_options.dart';
-import 'dart:developer' as devtools show log;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
