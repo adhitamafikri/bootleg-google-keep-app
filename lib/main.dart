@@ -6,6 +6,7 @@ import 'package:bootleg_google_keep_app/pages/login_page.dart';
 import 'package:bootleg_google_keep_app/pages/verify_email_page.dart';
 import 'package:bootleg_google_keep_app/pages/notes_page.dart';
 import 'firebase_options.dart';
+import 'package:bootleg_google_keep_app/constants/routes.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,10 +27,10 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(),
-        '/login': (context) => const LoginPage(),
-        '/register': (context) => const RegisterPage(),
-        '/verify-email': (context) => const VerifyEmailPage(),
-        '/notes': (context) => const NotesPage(),
+        loginRoute: (context) => const LoginPage(),
+        registerRoute: (context) => const RegisterPage(),
+        verifyEmailRoute: (context) => const VerifyEmailPage(),
+        notesRoute: (context) => const NotesPage(),
       },
     );
   }

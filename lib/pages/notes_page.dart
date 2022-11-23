@@ -1,3 +1,4 @@
+import 'package:bootleg_google_keep_app/constants/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -29,7 +30,7 @@ class _NotesPageState extends State<NotesPage> {
                 if (shouldLogout) {
                   await FirebaseAuth.instance.signOut();
                   Navigator.of(context)
-                      .pushNamedAndRemoveUntil('/login', (route) => false);
+                      .pushNamedAndRemoveUntil(loginRoute, (route) => false);
                 }
                 break;
             }

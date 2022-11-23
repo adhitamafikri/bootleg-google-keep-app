@@ -1,3 +1,4 @@
+import 'package:bootleg_google_keep_app/constants/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -71,7 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
         TextButton(
             onPressed: () {
               Navigator.of(context)
-                  .pushNamedAndRemoveUntil('/login', (route) => false);
+                  .pushNamedAndRemoveUntil(loginRoute, (route) => false);
             },
             child: const Text('Have an account? Login here!'))
       ]),
