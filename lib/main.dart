@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:bootleg_google_keep_app/pages/register_page.dart';
 import 'package:bootleg_google_keep_app/pages/login_page.dart';
 import 'package:bootleg_google_keep_app/pages/verify_email_page.dart';
-
+import 'package:bootleg_google_keep_app/pages/notes_page.dart';
 import 'firebase_options.dart';
+import 'dart:developer' as devtools show log;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
   runApp(const MyApp());
 }
 
@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
         '/verify-email': (context) => const VerifyEmailPage(),
+        '/notes': (context) => const NotesPage(),
       },
     );
   }
@@ -49,16 +50,14 @@ class HomePage extends StatelessWidget {
             case ConnectionState.done:
               final user = FirebaseAuth.instance.currentUser;
               if (user != null) {
-                final emailVerified = user?.emailVerified ?? false;
+                final emailVerified = user.emailVerified;
                 if (emailVerified) {
-                  return const Text('Your email is verified');
+                  return const NotesPage();
                 } else {
-                  print('You need to verify email');
                   return const VerifyEmailPage();
                 }
-              } else {
-                return const LoginPage();
               }
+              return const LoginPage();
             default:
               return const CircularProgressIndicator();
           }
