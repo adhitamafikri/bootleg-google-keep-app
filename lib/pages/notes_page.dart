@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -18,7 +19,21 @@ class _NotesPageState extends State<NotesPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('My Notes'), actions: [
         PopupMenuButton<MenuAction>(
-          onSelected: (value) {},
+          onSelected: (value) async {
+            switch (value) {
+              case MenuAction.logout:
+                final shouldLogout = await showLogOutDialog(context);
+                print('should logout?: $shouldLogout');
+                devtools.log(shouldLogout.toString());
+
+                if (shouldLogout) {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil('/login', (route) => false);
+                }
+                break;
+            }
+          },
           itemBuilder: (context) {
             return [
               const PopupMenuItem<MenuAction>(
