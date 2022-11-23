@@ -1,6 +1,8 @@
 import 'package:bootleg_google_keep_app/constants/routes.dart';
+import 'package:bootleg_google_keep_app/services/auth/auth_exceptions.dart';
+import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bootleg_google_keep_app/utils/show_error_dialog.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -54,18 +56,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 final email = _email.text;
                 final password = _password.text;
 
-                await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                    email: email, password: password);
-              } on FirebaseAuthException catch (e) {
-                if (e.code == 'email-already-in-use') {
-                  print('Email is already in use');
-                } else if (e.code == 'weak-password') {
-                  print('Weak Password');
-                } else if (e.code == 'invalid-email') {
-                  print('Invalid Email');
-                } else {
-                  print(e);
-                }
+                await AuthService.firebase()
+                    .createUser(email: email, password: password);
+              } on EmailAlreadyInUseException {
+                await showErrorDialog(context, 'Email is already in use');
+              } on WeakPasswordAuthException {
+                await showErrorDialog(context, 'Weak Password');
+              } on InvalidEmailAuthException {
+                await showErrorDialog(context, 'Invalid Email');
+              } on GenericAuthException {
+                await showErrorDialog(context, 'Registration Failed');
               }
             },
             child: const Text('Register')),

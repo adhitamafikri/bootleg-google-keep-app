@@ -1,11 +1,8 @@
 import 'package:bootleg_google_keep_app/constants/routes.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'dart:developer' as devtools show log;
 
-enum MenuAction { logout }
+import '../enums/menu_action.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({Key? key}) : super(key: key);
@@ -24,11 +21,9 @@ class _NotesPageState extends State<NotesPage> {
             switch (value) {
               case MenuAction.logout:
                 final shouldLogout = await showLogOutDialog(context);
-                print('should logout?: $shouldLogout');
-                devtools.log(shouldLogout.toString());
 
                 if (shouldLogout) {
-                  await FirebaseAuth.instance.signOut();
+                  await AuthService.firebase().logout();
                   Navigator.of(context)
                       .pushNamedAndRemoveUntil(loginRoute, (route) => false);
                 }
