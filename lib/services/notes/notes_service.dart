@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:bootleg_google_keep_app/extensions/list/filter.dart';
+import 'package:bootleg_google_keep_app/services/auth/auth_exceptions.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' show join;
@@ -17,6 +19,8 @@ class NotesService {
 
   List<NotesDatabase> _notes = [];
 
+  UsersDatabase? _user;
+
   // Singleton
   static final NotesService _shared = NotesService._sharedInstance();
   NotesService._sharedInstance() {
@@ -29,7 +33,15 @@ class NotesService {
 
   late final StreamController<List<NotesDatabase>> _notesStreamController;
 
-  Stream<List<NotesDatabase>> get allNotes => _notesStreamController.stream;
+  Stream<List<NotesDatabase>> get allNotes =>
+      _notesStreamController.stream.filter((note) {
+        final currentUser = _user;
+        if (currentUser != null) {
+          return note.userId == currentUser.id;
+        } else {
+          throw UserShouldBeSetBeforeReadingNotesException();
+        }
+      });
 
   Future<void> _cacheNotes() async {
     final allNotes = await getAllNotes();
@@ -37,12 +49,19 @@ class NotesService {
     _notesStreamController.add(_notes);
   }
 
-  Future<UsersDatabase> getOrCreateUser({required String email}) async {
+  Future<UsersDatabase> getOrCreateUser(
+      {required String email, bool setAsCurrentUser = true}) async {
     try {
       final user = await getUser(email: email);
+      if (setAsCurrentUser) {
+        _user = user;
+      }
       return user;
     } on CouldNotFindUserException {
       final createdUser = await createUser(email: email);
+      if (setAsCurrentUser) {
+        _user = createdUser;
+      }
       return createdUser;
     } catch (e) {
       rethrow;
