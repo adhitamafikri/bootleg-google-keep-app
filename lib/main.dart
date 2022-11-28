@@ -1,4 +1,5 @@
 import 'package:bootleg_google_keep_app/pages/notes/new_note_page.dart';
+import 'package:bootleg_google_keep_app/pages/notes/update_note_page.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_provider.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         verifyEmailRoute: (context) => const VerifyEmailPage(),
         notesRoute: (context) => const NotesPage(),
         newNoteRoute: (context) => const NewNotePage(),
+        updateNoteRoute: (context) => const UpdateNotePage(),
       },
     );
   }

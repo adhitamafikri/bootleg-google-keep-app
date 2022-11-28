@@ -55,11 +55,15 @@ class NotesService {
       required String body}) async {
     await _ensureDbIsOpen();
     final db = _getDatabase();
-    final updatesCount = await db.update(notesModel.tableName, {
-      'id': note.id,
-      '${notesModel.notesColumn['title']}': title,
-      '${notesModel.notesColumn['body']}': body,
-    });
+    final updatesCount = await db.update(
+      notesModel.tableName,
+      {
+        '${notesModel.notesColumn['title']}': title,
+        '${notesModel.notesColumn['body']}': body,
+      },
+      where: 'id = ?',
+      whereArgs: [note.id],
+    );
 
     if (updatesCount == 0) {
       throw CouldNotUpdateNoteException();
