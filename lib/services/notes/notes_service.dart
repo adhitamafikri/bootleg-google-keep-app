@@ -17,8 +17,15 @@ class NotesService {
 
   List<NotesDatabase> _notes = [];
 
+  // Singleton
+  static final NotesService _shared = NotesService._sharedInstance();
+  NotesService._sharedInstance();
+  factory NotesService() => _shared;
+
   final _notesStreamController =
       StreamController<List<NotesDatabase>>.broadcast();
+
+  Stream<List<NotesDatabase>> get allNotes => _notesStreamController.stream;
 
   Future<void> _cacheNotes() async {
     final allNotes = await getAllNotes();
@@ -42,6 +49,7 @@ class NotesService {
       {required NotesDatabase note,
       required String title,
       required String body}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabase();
     final updatesCount = await db.update(notesModel.tableName, {
       'id': note.id,
@@ -62,6 +70,7 @@ class NotesService {
   }
 
   Future<Iterable<NotesDatabase>> getAllNotes() async {
+    await _ensureDbIsOpen();
     final db = _getDatabase();
     final notes = await db.query(notesModel.tableName);
 
@@ -71,6 +80,7 @@ class NotesService {
   }
 
   Future<NotesDatabase> getNote({required int id}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabase();
     final notes = await db.query(notesModel.tableName,
         limit: 1, where: 'id = ?', whereArgs: [id]);
@@ -87,6 +97,7 @@ class NotesService {
   }
 
   Future<int> deleteAllNotes() async {
+    await _ensureDbIsOpen();
     final db = _getDatabase();
     final numberOfDeletions = await db.delete(notesModel.tableName);
 
@@ -97,6 +108,7 @@ class NotesService {
   }
 
   Future<void> deleteNote({required int id}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabase();
     final deletedCount =
         await db.delete(notesModel.tableName, where: 'id = ?', whereArgs: [id]);
@@ -113,6 +125,7 @@ class NotesService {
       {required UsersDatabase owner,
       required String title,
       required String body}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabase();
 
     final dbUser = await getUser(email: owner.email);
@@ -141,6 +154,7 @@ class NotesService {
   }
 
   Future<UsersDatabase> getUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabase();
     final results = await db.query(usersModel.tableName,
         limit: 1, where: 'email = ?', whereArgs: [email.toLowerCase()]);
@@ -153,6 +167,7 @@ class NotesService {
   }
 
   Future<UsersDatabase> createUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabase();
     final results = await db.query(usersModel.tableName,
         limit: 1, where: 'email = ?', whereArgs: [email.toLowerCase()]);
@@ -168,6 +183,7 @@ class NotesService {
   }
 
   Future<void> deleteUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabase();
     final deletedCount = await db.delete(usersModel.tableName,
         where: 'email = ?', whereArgs: [email.toLowerCase()]);
@@ -184,6 +200,12 @@ class NotesService {
     } else {
       return db;
     }
+  }
+
+  Future<void> _ensureDbIsOpen() async {
+    try {
+      await open();
+    } on DatabaseAlreadyOpenException {}
   }
 
   Future<void> open() async {

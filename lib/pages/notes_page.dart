@@ -1,5 +1,6 @@
 import 'package:bootleg_google_keep_app/constants/routes.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
+import 'package:bootleg_google_keep_app/services/notes/notes_service.dart';
 import 'package:flutter/material.dart';
 
 import '../enums/menu_action.dart';
@@ -12,6 +13,22 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
+  late final NotesService _notesService;
+  String get userEmail => AuthService.firebase().currentUser!.email!;
+
+  @override
+  void initState() {
+    _notesService = NotesService();
+    _notesService.open();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _notesService.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +55,25 @@ class _NotesPageState extends State<NotesPage> {
           },
         )
       ]),
-      body: Container(),
+      body: FutureBuilder(
+          future: _notesService.getOrCreateUser(email: userEmail),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                return StreamBuilder(
+                    stream: _notesService.allNotes,
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return const Text('Waiting for all notes...');
+                        default:
+                          return const CircularProgressIndicator();
+                      }
+                    });
+              default:
+                return const CircularProgressIndicator();
+            }
+          }),
     );
   }
 }
