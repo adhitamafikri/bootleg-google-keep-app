@@ -5,28 +5,31 @@ import 'package:path_provider/path_provider.dart';
 import 'package:bootleg_google_keep_app/constants/database.dart';
 import 'package:bootleg_google_keep_app/models/users_model.dart';
 import 'package:bootleg_google_keep_app/models/notes_model.dart';
+import 'package:bootleg_google_keep_app/services/notes/crud_exceptions.dart';
 
 final usersModel = UsersModel();
 final notesModel = NotesModel();
 
-class DatabaseAlreadyOpenException implements Exception {}
-
-class UnableToGetDocumentException implements Exception {}
-
-class DatabaseIsNotOpenException implements Exception {}
-
-class CouldNotDeleteUserException implements Exception {}
-
-class UserAlreadyExistsException implements Exception {}
-
-class CouldNotFindUserException implements Exception {}
-
-class CouldNotDeleteNoteException implements Exception {}
-
-class CouldNotFindNoteException implements Exception {}
-
 class NotesService {
   Database? _db;
+
+  Future<NotesDatabase> updateNote(
+      {required NotesDatabase note,
+      required String title,
+      required String body}) async {
+    final db = _getDatabase();
+    final updatesCount = await db.update(notesModel.tableName, {
+      'id': note.id,
+      '${notesModel.notesColumn['title']}': title,
+      '${notesModel.notesColumn['body']}': body,
+    });
+
+    if (updatesCount == 0) {
+      throw CouldNotUpdateNoteException();
+    }
+
+    return await getNote(id: note.id);
+  }
 
   Future<Iterable<NotesDatabase>> getAllNotes() async {
     final db = _getDatabase();
