@@ -1,10 +1,11 @@
+import 'package:bootleg_google_keep_app/pages/notes/new_note_page.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_provider.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:bootleg_google_keep_app/pages/register_page.dart';
 import 'package:bootleg_google_keep_app/pages/login_page.dart';
 import 'package:bootleg_google_keep_app/pages/verify_email_page.dart';
-import 'package:bootleg_google_keep_app/pages/notes_page.dart';
+import 'package:bootleg_google_keep_app/pages/notes/notes_page.dart';
 import 'package:bootleg_google_keep_app/constants/routes.dart';
 
 void main() {
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         registerRoute: (context) => const RegisterPage(),
         verifyEmailRoute: (context) => const VerifyEmailPage(),
         notesRoute: (context) => const NotesPage(),
+        newNoteRoute: (context) => const NewNotePage(),
       },
     );
   }

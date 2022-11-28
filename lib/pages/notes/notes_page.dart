@@ -3,7 +3,7 @@ import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
 import 'package:bootleg_google_keep_app/services/notes/notes_service.dart';
 import 'package:flutter/material.dart';
 
-import '../enums/menu_action.dart';
+import '../../enums/menu_action.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({Key? key}) : super(key: key);
@@ -33,6 +33,11 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('My Notes'), actions: [
+        IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(newNoteRoute);
+            },
+            icon: const Icon(Icons.add)),
         PopupMenuButton<MenuAction>(
           onSelected: (value) async {
             switch (value) {
