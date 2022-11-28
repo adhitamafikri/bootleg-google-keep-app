@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:bootleg_google_keep_app/constants/routes.dart';
+import 'package:bootleg_google_keep_app/pages/notes/notes_list_view.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
 import 'package:bootleg_google_keep_app/services/notes/notes_service.dart';
+import 'package:bootleg_google_keep_app/utils/dialogs/logout_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../../enums/menu_action.dart';
@@ -36,7 +40,7 @@ class _NotesPageState extends State<NotesPage> {
           onSelected: (value) async {
             switch (value) {
               case MenuAction.logout:
-                final shouldLogout = await showLogOutDialog(context);
+                final shouldLogout = await showLogoutDialog(context);
 
                 if (shouldLogout) {
                   await AuthService.firebase().logout();
@@ -68,24 +72,11 @@ class _NotesPageState extends State<NotesPage> {
                           if (snapshot.hasData) {
                             final allNotes =
                                 snapshot.data as List<NotesDatabase>;
-                            print('notes');
-                            print(allNotes);
-                            return ListView.builder(
-                                itemCount: allNotes.length,
-                                itemBuilder: (context, index) {
-                                  final note = allNotes[index];
-                                  return ListTile(
-                                    title: Text(
-                                      note.title,
-                                      maxLines: 1,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    subtitle: Text(note.body,
-                                        maxLines: 1,
-                                        softWrap: true,
-                                        overflow: TextOverflow.ellipsis),
-                                  );
+                            log('Your notes: ${allNotes}');
+                            return NotesListView(
+                                notes: allNotes,
+                                onDeleteNote: (note) async {
+                                  await _notesService.deleteNote(id: note.id);
                                 });
                           } else {
                             return const CircularProgressIndicator();
@@ -100,29 +91,4 @@ class _NotesPageState extends State<NotesPage> {
           }),
     );
   }
-}
-
-Future<bool> showLogOutDialog(BuildContext context) async {
-  final result = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('logout'),
-          content: const Text('Are you sure you want to to logout?'),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                child: const Text('Cancel')),
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                child: const Text('Logout'))
-          ],
-        );
-      });
-
-  return result ?? false;
 }

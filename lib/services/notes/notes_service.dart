@@ -225,21 +225,19 @@ class NotesService {
 
       const createUserTable = '''
         CREATE TABLE IF NOT EXISTS "users" (
-          "id" INTEGER NOT NULL,
-          "email" TEXT NOT_ULL UNIQUE,
-          PRIMARY KEY ("id" AUTOINCREMENT)
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          "email" TEXT NOT_ULL UNIQUE
         );
       ''';
       await db.execute(createUserTable);
 
       const createNotesTable = '''
         CREATE TABLE IF NOT EXISTS "notes" (
-          "id" INTEGER NOT NULL,
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
           "user_id" INTEGER NOT NULL,
           "title" TEXT,
           "body" TEXT,
           "is_synced_with_cloud" INTEGER NOT NULL DEFAULT 0,
-          PRIMARY KEY ("id" AUTOINCREMENT),
           FOREIGN KEY ("user_id") REFERENCES "users"("id")
         );
         ''';
@@ -309,7 +307,7 @@ class NotesDatabase {
 
   @override
   String toString() =>
-      'Your Note,\nid: $id\ntitle: $title\nbody: $body\nis synced: $isSyncedWithCloud';
+      'id: $id\ntitle: $title\nbody: $body\nis synced: $isSyncedWithCloud';
 
   @override
   bool operator ==(covariant NotesDatabase other) => id == other.id;

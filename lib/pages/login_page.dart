@@ -2,7 +2,7 @@ import 'package:bootleg_google_keep_app/constants/routes.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_exceptions.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:bootleg_google_keep_app/utils/show_error_dialog.dart';
+import 'package:bootleg_google_keep_app/utils/dialogs/error_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
