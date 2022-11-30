@@ -54,42 +54,18 @@ class HomePage extends StatelessWidget {
     context.read<AuthBloc>().add(const AuthEventInitialize());
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthStateLoggedIn) {
-        // Navigator.of(context)
-        //     .pushNamedAndRemoveUntil(notesRoute, (route) => false);
         return const NotesPage();
       } else if (state is AuthStateNeedsVerification) {
-        // Navigator.of(context)
-        //     .pushNamedAndRemoveUntil(verifyEmailRoute, (route) => false);
         return const VerifyEmailPage();
       } else if (state is AuthStateLoggedOut) {
-        // Navigator.of(context)
-        //     .pushNamedAndRemoveUntil(loginRoute, (route) => false);
         return const LoginPage();
+      } else if (state is AuthStateRegistering) {
+        return const RegisterPage();
       } else {
         return const Scaffold(
           body: CircularProgressIndicator(),
         );
       }
     });
-
-    // return FutureBuilder(
-    //     future: AuthService.firebase().initialize(),
-    //     builder: (context, snapshot) {
-    //       switch (snapshot.connectionState) {
-    //         case ConnectionState.done:
-    //           final user = AuthService.firebase().currentUser;
-    //           if (user != null) {
-    //             final emailVerified = user.isEmailVerified;
-    //             if (emailVerified) {
-    //               return const NotesPage();
-    //             } else {
-    //               return const VerifyEmailPage();
-    //             }
-    //           }
-    //           return const LoginPage();
-    //         default:
-    //           return const CircularProgressIndicator();
-    //       }
-    //     });
   }
 }
