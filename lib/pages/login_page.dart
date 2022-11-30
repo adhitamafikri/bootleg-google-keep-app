@@ -1,8 +1,10 @@
 import 'package:bootleg_google_keep_app/constants/routes.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_exceptions.dart';
-import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
+import 'package:bootleg_google_keep_app/services/auth/bloc/auth_bloc.dart';
+import 'package:bootleg_google_keep_app/services/auth/bloc/auth_event.dart';
 import 'package:flutter/material.dart';
 import 'package:bootleg_google_keep_app/utils/dialogs/error_dialog.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -57,16 +59,17 @@ class _LoginPageState extends State<LoginPage> {
               try {
                 final email = _email.text;
                 final password = _password.text;
-                final userCredential = await AuthService.firebase()
-                    .login(email: email, password: password);
-                final user = AuthService.firebase().currentUser;
-                if (user?.isEmailVerified ?? false) {
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil(notesRoute, (route) => false);
-                } else {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      verifyEmailRoute, (route) => false);
-                }
+                // final userCredential = await AuthService.firebase()
+                //     .login(email: email, password: password);
+                // final user = AuthService.firebase().currentUser;
+                // if (user?.isEmailVerified ?? false) {
+                //   Navigator.of(context)
+                //       .pushNamedAndRemoveUntil(notesRoute, (route) => false);
+                // } else {
+                //   Navigator.of(context).pushNamedAndRemoveUntil(
+                //       verifyEmailRoute, (route) => false);
+                // }
+                context.read<AuthBloc>().add(AuthEventLogin(email, password));
               } on UserNotFoundAuthException {
                 await showErrorDialog(context, 'User not found');
               } on WrongPasswordAuthException {

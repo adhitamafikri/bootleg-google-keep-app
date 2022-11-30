@@ -3,10 +3,13 @@ import 'dart:developer';
 import 'package:bootleg_google_keep_app/constants/routes.dart';
 import 'package:bootleg_google_keep_app/pages/notes/notes_list_view.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
+import 'package:bootleg_google_keep_app/services/auth/bloc/auth_bloc.dart';
+import 'package:bootleg_google_keep_app/services/auth/bloc/auth_event.dart';
 import 'package:bootleg_google_keep_app/services/cloud/cloud_notes.dart';
 import 'package:bootleg_google_keep_app/services/cloud/firebase_cloud_storage.dart';
 import 'package:bootleg_google_keep_app/utils/dialogs/logout_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../enums/menu_action.dart';
 
@@ -43,9 +46,10 @@ class _NotesPageState extends State<NotesPage> {
                   final shouldLogout = await showLogoutDialog(context);
 
                   if (shouldLogout) {
-                    await AuthService.firebase().logout();
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+                    // await AuthService.firebase().logout();
+                    // Navigator.of(context)
+                    //     .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+                    context.read<AuthBloc>().add(const AuthEventLogout());
                   }
                   break;
               }
