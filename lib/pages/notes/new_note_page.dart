@@ -4,7 +4,9 @@ import 'package:bootleg_google_keep_app/constants/routes.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
 import 'package:bootleg_google_keep_app/services/cloud/cloud_notes.dart';
 import 'package:bootleg_google_keep_app/services/cloud/firebase_cloud_storage.dart';
+import 'package:bootleg_google_keep_app/utils/dialogs/cannot_share_empty_note_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 class NewNotePage extends StatefulWidget {
   const NewNotePage({Key? key}) : super(key: key);
@@ -72,7 +74,23 @@ class _NewNotePageState extends State<NewNotePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('New Note')),
+        appBar: AppBar(
+          title: const Text('New Note'),
+          actions: [
+            IconButton(
+                onPressed: () async {
+                  final title = _titleController.text;
+                  final body = _bodyController.text;
+
+                  if (_note == null || title.isEmpty || body.isEmpty) {
+                    await showCannotShareEmptyDialog(context);
+                  } else {
+                    Share.share('Note:\n$title\n\n$body');
+                  }
+                },
+                icon: const Icon(Icons.share))
+          ],
+        ),
         body: Column(
           children: [
             TextField(
