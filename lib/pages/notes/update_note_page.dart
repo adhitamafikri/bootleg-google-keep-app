@@ -1,6 +1,7 @@
 import 'package:bootleg_google_keep_app/constants/routes.dart';
-import 'package:bootleg_google_keep_app/services/notes/notes_service.dart';
 import 'package:bootleg_google_keep_app/utils/generics/get_arguments.dart';
+import 'package:bootleg_google_keep_app/services/cloud/cloud_notes.dart';
+import 'package:bootleg_google_keep_app/services/cloud/firebase_cloud_storage.dart';
 import 'package:flutter/material.dart';
 
 class UpdateNotePage extends StatefulWidget {
@@ -11,14 +12,14 @@ class UpdateNotePage extends StatefulWidget {
 }
 
 class _UpdateNotePageState extends State<UpdateNotePage> {
-  NotesDatabase? _note;
-  late final NotesService _notesService;
+  CloudNotes? _note;
+  late final FirebaseCloudStorage _notesService;
 
   late final TextEditingController _titleController;
   late final TextEditingController _bodyController;
 
-  Future<NotesDatabase?> getNote(BuildContext context) async {
-    final widgetNote = context.getArgument<NotesDatabase>();
+  Future<CloudNotes?> getNote(BuildContext context) async {
+    final widgetNote = context.getArgument<CloudNotes>();
 
     if (widgetNote != null) {
       _note = widgetNote;
@@ -28,7 +29,7 @@ class _UpdateNotePageState extends State<UpdateNotePage> {
     }
   }
 
-  Future<NotesDatabase?> updateNote() async {
+  Future<CloudNotes?> updateNote() async {
     try {
       final existingNote = _note;
       if (existingNote == null) {
@@ -36,11 +37,10 @@ class _UpdateNotePageState extends State<UpdateNotePage> {
       }
 
       if (_titleController.text.isNotEmpty && _bodyController.text.isNotEmpty) {
-        final updatedNote = await _notesService.updateNote(
-            note: existingNote,
+        await _notesService.updateNote(
+            documentId: existingNote.documentId,
             title: _titleController.text,
             body: _bodyController.text);
-        return updatedNote;
       }
 
       return null;
@@ -60,7 +60,7 @@ class _UpdateNotePageState extends State<UpdateNotePage> {
 
   @override
   void initState() {
-    _notesService = NotesService();
+    _notesService = FirebaseCloudStorage();
     _titleController = TextEditingController();
     _bodyController = TextEditingController();
     super.initState();

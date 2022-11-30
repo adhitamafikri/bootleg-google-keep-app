@@ -2,7 +2,8 @@ import 'dart:developer';
 
 import 'package:bootleg_google_keep_app/constants/routes.dart';
 import 'package:bootleg_google_keep_app/services/auth/auth_service.dart';
-import 'package:bootleg_google_keep_app/services/notes/notes_service.dart';
+import 'package:bootleg_google_keep_app/services/cloud/cloud_notes.dart';
+import 'package:bootleg_google_keep_app/services/cloud/firebase_cloud_storage.dart';
 import 'package:flutter/material.dart';
 
 class NewNotePage extends StatefulWidget {
@@ -13,13 +14,13 @@ class NewNotePage extends StatefulWidget {
 }
 
 class _NewNotePageState extends State<NewNotePage> {
-  NotesDatabase? _note;
-  late final NotesService _notesService;
+  CloudNotes? _note;
+  late final FirebaseCloudStorage _notesService;
 
   late final TextEditingController _titleController;
   late final TextEditingController _bodyController;
 
-  Future<NotesDatabase?> createNewNote() async {
+  Future<CloudNotes?> createNewNote() async {
     try {
       final existingNote = _note;
       print(existingNote.toString());
@@ -29,10 +30,9 @@ class _NewNotePageState extends State<NewNotePage> {
 
       if (_titleController.text.isNotEmpty && _bodyController.text.isNotEmpty) {
         final currentUser = AuthService.firebase().currentUser!;
-        final email = currentUser.email;
-        final owner = await _notesService.getUser(email: email);
-        final newNote = await _notesService.createNote(
-            owner: owner,
+        final userId = currentUser.id;
+        final newNote = await _notesService.createNewNote(
+            ownerUserId: userId,
             title: _titleController.text,
             body: _bodyController.text);
         log('newNote is: ${newNote}');
@@ -56,7 +56,7 @@ class _NewNotePageState extends State<NewNotePage> {
 
   @override
   void initState() {
-    _notesService = NotesService();
+    _notesService = FirebaseCloudStorage();
     _titleController = TextEditingController();
     _bodyController = TextEditingController();
     super.initState();

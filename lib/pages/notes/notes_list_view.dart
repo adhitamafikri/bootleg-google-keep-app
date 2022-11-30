@@ -1,12 +1,11 @@
-import 'package:bootleg_google_keep_app/constants/routes.dart';
-import 'package:bootleg_google_keep_app/services/notes/notes_service.dart';
+import 'package:bootleg_google_keep_app/services/cloud/cloud_notes.dart';
 import 'package:bootleg_google_keep_app/utils/dialogs/delete_dialog.dart';
 import 'package:flutter/material.dart';
 
-typedef NoteCallback = void Function(NotesDatabase note);
+typedef NoteCallback = void Function(CloudNotes note);
 
 class NotesListView extends StatelessWidget {
-  final List<NotesDatabase> notes;
+  final Iterable<CloudNotes> notes;
   final NoteCallback onDeleteNote;
   final NoteCallback onTap;
   const NotesListView(
@@ -21,7 +20,7 @@ class NotesListView extends StatelessWidget {
     return ListView.builder(
         itemCount: notes.length,
         itemBuilder: (context, index) {
-          final note = notes[index];
+          final note = notes.elementAt(index);
           return ListTile(
             title: Text(
               note.title,
