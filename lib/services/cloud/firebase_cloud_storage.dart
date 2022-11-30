@@ -31,12 +31,38 @@ class FirebaseCloudStorage {
     }
   }
 
-  void createNewNote({required String ownerUserId}) async {
-    await notes.add({
-      ownerUserIdField: ownerUserId,
-      titleField: '',
-      bodyField: '',
-    });
+  Future<void> createNewNote(
+      {required String ownerUserId,
+      required String title,
+      required String body}) async {
+    try {
+      await notes.add({
+        ownerUserIdField: ownerUserId,
+        titleField: title,
+        bodyField: body,
+      });
+    } catch (e) {
+      throw CouldNotCreateNoteException();
+    }
+  }
+
+  Future<void> updateNote(
+      {required String documentId,
+      required String title,
+      required String body}) async {
+    try {
+      await notes.doc(documentId).update({titleField: title, bodyField: body});
+    } catch (e) {
+      throw CouldNotUpdateNoteException();
+    }
+  }
+
+  Future<void> deleteNote({required String documentId}) async {
+    try {
+      await notes.doc(documentId).delete();
+    } catch (e) {
+      throw CouldNotDeleteException();
+    }
   }
 
   // Singleton
